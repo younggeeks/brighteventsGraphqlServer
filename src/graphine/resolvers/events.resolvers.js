@@ -1,11 +1,43 @@
 const { UserInputError, AuthenticationError } = require('apollo-server');
+const Sequelize = require('sequelize');
 const pubsub = require('./../subscription');
 const { EVENTS } = require('../subscription');
 
 
 module.exports = {
   Query: {
-    getAllEvents: (_, args, { models }) => models.Event.findAll({ paranoid: true, include: [{ model: models.User, as: 'user' }] }),
+    getAllEvents: async (_, { cursor = null, limit = 20 }, { models }) => {
+      const cursorOptions = cursor
+        ? {
+          where: {
+            createdAt: {
+              [Sequelize.Op.lt]: cursor,
+            },
+          },
+        }
+        : {};
+
+
+      const events = await models.Event.findAll({
+        limit: limit + 1,
+        order: [['createdAt', 'DESC']],
+        ...cursorOptions,
+        paranoid: true,
+        include: [{ model: models.User, as: 'user' }],
+      });
+
+      const hasNextPage = events.length > limit;
+      const edges = hasNextPage ? events.slice(0, -1) : events;
+
+
+      return {
+        edges,
+        pageInfo: {
+          hasNextPage,
+          endCursor: edges[edges.length - 1].createdAt,
+        },
+      };
+    },
     getMyEvents: (_, args, { models, user }) => models.Event.findAll({ where: { userId: user.id }, include: [{ model: models.Tag, as: 'tags' }] }),
     getSingleEvent: async (_, { id }, { models, user }) => {
       const event = await models.Event.findById(id);
@@ -34,7 +66,6 @@ module.exports = {
       const startDate = Number(start);
       const endDate = Number(end);
       const userId = user.id;
-      console.log('the user is ', userId);
       const newEvent = await models.Event.create({
         name, address, start: startDate, end: endDate, userId, categoryId,
       });

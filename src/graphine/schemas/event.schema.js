@@ -2,9 +2,9 @@ const { gql } = require('apollo-server-express');
 
 module.exports = gql`
     extend type Query {
-        getAllEvents: [Event!]
+        getAllEvents(cursor:String,limit:Int): EventConnection!
         getEvent(id:ID!):Event!
-        getMyEvents(cursor:String!,limit:Int): [Event!]
+        getMyEvents: [Event!]
         getSingleEvent(id:ID!):Event!
     }
 
@@ -21,6 +21,16 @@ module.exports = gql`
         user:User!
         tags:[Tag!]
         users:[User!]
+    }
+
+    type EventConnection {
+        edges: [Event!]!
+        pageInfo:PageInfo!
+    }
+
+    type PageInfo {
+        hasNextPage: Boolean!
+        endCursor:String!
     }
 
     extend type Subscription{
