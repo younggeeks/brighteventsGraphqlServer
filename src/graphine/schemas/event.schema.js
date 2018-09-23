@@ -4,7 +4,7 @@ module.exports = gql`
     extend type Query {
         getAllEvents: [Event!]
         getEvent(id:ID!):Event!
-        getMyEvents: [Event!]
+        getMyEvents(cursor:String!,limit:Int): [Event!]
         getSingleEvent(id:ID!):Event!
     }
 
