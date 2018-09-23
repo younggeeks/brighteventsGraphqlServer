@@ -5,6 +5,7 @@ const resolvers = require('./graphine/resolvers');
 const models = require('./db/models');
 const http = require('http');
 
+const PORT = process.env.PORT;
 const app = express();
 const typeDefs = require('./graphine/schemas');
 
@@ -27,7 +28,7 @@ const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 models.sequelize.sync({ force: false }).then(() => {
-  httpServer.listen({ port: 9000 }, () => {
-    console.log('Up and running http://localhost:9000');
+  httpServer.listen({ port: PORT }, () => {
+    console.log(`Up and running http://localhost:${PORT}${server.graphqlPath}`);
   });
 });
