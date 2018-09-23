@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "start": "nodemon  -r dotenv/config ./src/index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^2.0.6",
+    "apollo-server-express": "^2.0.5",
+    "bcrypt": "^3.0.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "express-jwt": "^5.3.1",
+    "graphql": "^14.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "nodemon": "^1.18.4",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.38.0",
+    "sequelize-cli": "^4.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
